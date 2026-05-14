@@ -1,78 +1,43 @@
-
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מוריד המהרג'נאת שלי</title>
+    <title>מוריד השירים שלי</title>
     <style>
         body { font-family: sans-serif; background: #121212; color: white; text-align: center; padding: 20px; }
-        .container { max-width: 500px; margin: auto; }
-        .song-card { 
-            background: #1db954; 
-            color: black; 
-            margin: 10px 0; 
-            padding: 15px; 
-            border-radius: 12px; 
-            display: flex; 
-            justify-content: space-between;
-            align-items: center;
-            text-decoration: none;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
-        .refresh-btn {
-            background: #ffffff;
-            color: black;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
+        input { padding: 12px; border-radius: 25px; border: none; width: 80%; max-width: 400px; margin-bottom: 10px; }
+        button { padding: 12px 25px; border-radius: 25px; border: none; background: #1db954; color: white; font-weight: bold; cursor: pointer; }
+        .results { margin-top: 20px; text-align: right; max-width: 500px; margin-left: auto; margin-right: auto; }
+        .song-item { background: #282828; padding: 10px; margin: 5px 0; border-radius: 8px; display: flex; justify-content: space-between; }
+        a { color: #1db954; text-decoration: none; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🔥 המהרג'נאת שלי 🔥</h1>
-        <button class="refresh-btn" onclick="location.reload()">רענן רשימה</button>
-        <div id="file-list">
-            <p>בודק אם ירדו שירים חדשים...</p>
-            <!-- כאן יופיעו השירים בפורמט m4a -->
-        </div>
-    </div>
+    <h1>🔎 חיפוש והורדת שירים</h1>
+    <input type="text" id="artistQuery" placeholder="הכנס שם זמר או שיר...">
+    <br>
+    <button onclick="searchAndDownload()">חפש והורד 100 תוצאות</button>
+
+    <div class="results" id="status"></div>
 
     <script>
-        // קוד קטן שבודק אילו קבצים קיימים בתיקיית ההורדות
-        async function loadSongs() {
+        async function searchAndDownload() {
+            const query = document.getElementById('artistQuery').value;
+            const status = document.getElementById('status');
+            if (!query) return alert("נא להזין שם!");
+
+            status.innerHTML = "⏳ מתחיל בחיפוש והורדה של 100 שירים... זה עשוי לקחת זמן.";
+            
+            // שליחת שאילתה לשרת
             try {
-                const response = await fetch('/downloads/');
-                const text = await response.text();
-                const listDiv = document.getElementById('file-list');
-                
-                // כאן אנחנו מחלצים את שמות הקבצים (עובד ברוב השרתים שמאפשרים Directory Listing)
-                const files = text.match(/href="([^"]+\.m4a)"/g);
-                
-                if (files) {
-                    listDiv.innerHTML = '';
-                    files.forEach(file => {
-                        const fileName = file.match(/"([^"]+)"/)[1];
-                        const cleanName = decodeURIComponent(fileName);
-                        listDiv.innerHTML += `
-                            <a href="/downloads/${fileName}" class="song-card" download>
-                                <span>🎵 ${cleanName}</span>
-                                <span>⬇️</span>
-                            </a>`;
-                    });
-                } else {
-                    listDiv.innerHTML = '<p>עדיין לא ירדו שירים. המתן כמה דקות ורענן.</p>';
-                }
+                const response = await fetch(`/.netlify/functions/download?q=${encodeURIComponent(query)}`);
+                const data = await response.json();
+                status.innerHTML = `✅ הסתיימה ההורדה של תוצאות עבור: ${query}`;
             } catch (e) {
-                console.log("Error loading files");
+                status.innerHTML = "❌ שגיאה בחיבור לשרת.";
             }
         }
-        loadSongs();
     </script>
 </body>
 </html>
