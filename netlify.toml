@@ -1,35 +1,6 @@
 [build]
-      command = "pip install -r requirements.txt"
-      publish = "."
+  command = "pip install -r requirements.txt"
+  publish = "."
 
-    [functions]
-      node_bundle = true
-    ```
-
----
-
-### שלב 2: העלאה ל-GitHub
-מכיוון שצירפת קישור לפרויקט ב-Netlify, הדרך הכי מהירה היא לחבר אותו למאגר (Repository) ב-GitHub.
-1.  צור מאגר חדש ב-GitHub (למשל בשם `mahraganat-downloader`).
-2.  העלה את שלושת הקבצים שהכנת לשם.
-
----
-
-### שלב 3: חיבור ל-Netlify
-1.  כנס ללוח הבקרה של **Netlify** בקישור ששלחת.
-2.  לחץ על **Add new site** ואז על **Import an existing project**.
-3.  בחר ב-**GitHub** והתחבר לחשבון שלך.
-4.  בחר את המאגר שבו נמצא קוד ה-Python.
-5.  במסך ה-**Build settings**, ודא שהפקודה היא `pip install -r requirements.txt`.
-6.  לחץ על **Deploy**.
-
----
-
-### שלב 4: הרצה ובדיקה
-*   לאחר שהפריסה תסתיים, Netlify ינסה להריץ את הקוד.
-*   **שים לב:** בגלל ש-Netlify הוא שירות ענן, הקבצים יירדו לשרת שלו ולא לטלפון שלך באופן אוטומטי.
-*   אם האפליקציה נתקעת או לא מורידה לטלפון, זה בגלל ש-Netlify מכבה תהליכים שלוקחים יותר מדי זמן (Timeouts).
-
-> **מה לרשום לי אם אתה נתקע:**
-> *   אם ה-Deploy נכשל (צבע אדום): **"תבדוק את הלוג של ה-Deploy ב-Netlify ותגיד לי מה השגיאה"**.
-> *   אם הכל עובד אבל אתה לא מוצא את הקבצים: **"איך אני גורם לקבצים לרדת לטלפון שלי ולא לשרת?"**.
+[functions]
+  node_bundle = true
