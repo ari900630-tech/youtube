@@ -3,4 +3,4 @@
   publish = "."
 
 [functions]
-  node_bundle = true
+  # השארנו את זה ריק כדי ש-Netlify ישתמש בברירת המחדל התקינה
