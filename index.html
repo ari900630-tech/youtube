@@ -1,6 +1,78 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מוריד המהרג'נאת שלי</title>
+    <style>
+        body { font-family: sans-serif; background: #121212; color: white; text-align: center; padding: 20px; }
+        .container { max-width: 500px; margin: auto; }
+        .song-card { 
+            background: #1db954; 
+            color: black; 
+            margin: 10px 0; 
+            padding: 15px; 
+            border-radius: 12px; 
+            display: flex; 
+            justify-content: space-between;
+            align-items: center;
+            text-decoration: none;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .refresh-btn {
+            background: #ffffff;
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
 <body>
-  <h1>Mahraganat Downloader is running</h1>
+    <div class="container">
+        <h1>🔥 המהרג'נאת שלי 🔥</h1>
+        <button class="refresh-btn" onclick="location.reload()">רענן רשימה</button>
+        <div id="file-list">
+            <p>בודק אם ירדו שירים חדשים...</p>
+            <!-- כאן יופיעו השירים בפורמט m4a -->
+        </div>
+    </div>
+
+    <script>
+        // קוד קטן שבודק אילו קבצים קיימים בתיקיית ההורדות
+        async function loadSongs() {
+            try {
+                const response = await fetch('/downloads/');
+                const text = await response.text();
+                const listDiv = document.getElementById('file-list');
+                
+                // כאן אנחנו מחלצים את שמות הקבצים (עובד ברוב השרתים שמאפשרים Directory Listing)
+                const files = text.match(/href="([^"]+\.m4a)"/g);
+                
+                if (files) {
+                    listDiv.innerHTML = '';
+                    files.forEach(file => {
+                        const fileName = file.match(/"([^"]+)"/)[1];
+                        const cleanName = decodeURIComponent(fileName);
+                        listDiv.innerHTML += `
+                            <a href="/downloads/${fileName}" class="song-card" download>
+                                <span>🎵 ${cleanName}</span>
+                                <span>⬇️</span>
+                            </a>`;
+                    });
+                } else {
+                    listDiv.innerHTML = '<p>עדיין לא ירדו שירים. המתן כמה דקות ורענן.</p>';
+                }
+            } catch (e) {
+                console.log("Error loading files");
+            }
+        }
+        loadSongs();
+    </script>
 </body>
 </html>
